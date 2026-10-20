@@ -10,7 +10,7 @@
       "Data": {
         "Label": "Create monster card from template",
         "Name": "%name%",
-        "TemplateId": "%qn:card-\"5E Monster Template\".id%",
+        "TemplateId": "%q:card[5E Monster Template].id%",
         "Owner": "%playerId%",
         "Output": "newCardId"
       },

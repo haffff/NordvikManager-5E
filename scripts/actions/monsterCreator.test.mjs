@@ -14,7 +14,7 @@ const step = (name, type) => action(name).content.find((s) => s.Type === type);
 
 test("create_monster_from_srd: card from the monster template, then every property", () => {
   const create = step("create_monster_from_srd", "CreateCard");
-  assert.equal(create.Data.TemplateId, '%qn:card-"5E Monster Template".id%');
+  assert.equal(create.Data.TemplateId, '%q:card[5E Monster Template].id%');
   assert.equal(create.Data.Name, "%name%");
   assert.equal(create.Data.Output, "newCardId");
 

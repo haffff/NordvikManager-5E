@@ -10,7 +10,7 @@
       "Data": {
         "Label": "Create item card from template",
         "Name": "%name%",
-        "TemplateId": "%qn:card-\"5E Item Template\".id%",
+        "TemplateId": "%q:card[5E Item Template].id%",
         "Owner": "%playerId%",
         "Output": "newCardId"
       },
