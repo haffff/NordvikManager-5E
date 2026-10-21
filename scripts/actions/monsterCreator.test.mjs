@@ -1,4 +1,4 @@
-// The monster creator's actions (addon_files/Actions/*monster*.json, set_card_prop.json):
+// The monster creator's actions (addon_files/Actions/*monster*.json):
 // a card from the 5E Monster Template, every property the view computed, and a token
 // when it was opened from the map.
 import { test } from "node:test";
@@ -19,18 +19,17 @@ test("create_monster_from_srd: card from the monster template, then every proper
   assert.equal(create.Data.Output, "newCardId");
 
   const each = step("create_monster_from_srd", "ForEach");
-  assert.deepEqual([each.Data.Collection, each.Data.ItemName, each.Data.Action], ["props", "prop", "dnd5e/set_card_prop"]);
+  assert.deepEqual([each.Data.Collection, each.Data.ItemName], ["props", "prop"]);
 
-  const set = step("set_card_prop", "SetProperty");
-  assert.deepEqual([set.Data.ParentId, set.Data.PropertyName, set.Data.PropertyValue], ["%newCardId%", "%v:prop.name%", "%v:prop.value%"]);
+  const [set] = each.Data.Do;
+  assert.equal(set.Type, "SetProperty");
+  assert.deepEqual([set.Data.ParentId, set.Data.PropertyName, set.Data.PropertyValue], ["%newCardId%", "%prop.name%", "%prop.value%"]);
 });
 
 test("opened from the map, it also places the monster's token there", () => {
   const branch = step("create_monster_from_srd", "If");
   assert.equal(branch.Data.Condition, "'%hasMapContext%' = 'true'");
-  assert.equal(branch.Data.ActionTrue, "dnd5e/create_monster_spawn_token");
-
-  const spawn = step("create_monster_spawn_token", "RunClientCommand");
+  const spawn = branch.Data.Then.find((s) => s.Type === "RunClientCommand");
   assert.deepEqual([spawn.Data.Panel, spawn.Data.Command], ["BattleMap_token", "CreateToken"]);
   assert.match(spawn.Data.Data, /%newCardId%/);
   assert.match(spawn.Data.Data, /%battleMapId%/);

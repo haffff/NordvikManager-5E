@@ -22,7 +22,18 @@
         "Label": "Fill in the stat block (props sent by the monster creator)",
         "Collection": "props",
         "ItemName": "prop",
-        "Action": "dnd5e/set_card_prop"
+        "Do": [
+          {
+            "id": "392d2d4c-8d14-59b9-b524-9fafd7871678",
+            "Data": {
+              "Label": "Set one property of the new card",
+              "ParentId": "%newCardId%",
+              "PropertyName": "%prop.name%",
+              "PropertyValue": "%prop.value%"
+            },
+            "Type": "SetProperty"
+          }
+        ]
       },
       "Type": "ForEach"
     },
@@ -31,7 +42,19 @@
       "Data": {
         "Label": "Place its token when opened from the map",
         "Condition": "'%hasMapContext%' = 'true'",
-        "ActionTrue": "dnd5e/create_monster_spawn_token"
+        "Then": [
+          {
+            "id": "17fdf680-b810-5528-8637-39b82e5b9ef5",
+            "Data": {
+              "Label": "Spawn token for the new monster card",
+              "Panel": "BattleMap_token",
+              "Command": "CreateToken",
+              "Player": "%playerId%",
+              "Data": "{\"contextId\": \"%battleMapId%\", \"cardId\": \"%newCardId%\", \"position\": %position%}"
+            },
+            "Type": "RunClientCommand"
+          }
+        ]
       },
       "Type": "If"
     }

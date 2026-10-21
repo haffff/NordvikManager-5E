@@ -1,5 +1,5 @@
-// The Turn Changed countdown (addon_files/Actions/counters_turn_tick*.json): its RunScript
-// steps are run here with Node, and the countdown must match src/counters.js tickRound.
+// The Turn Changed countdown (addon_files/Actions/counters_turn_tick.json): its RunScript
+// step is run here with Node, and the countdown must match src/counters.js tickRound.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -18,22 +18,21 @@ const runScript = (name, vars) => {
   return new Function("vars", step.Data.Script)(Object.freeze(vars));
 };
 
-test("it runs on the Turn Changed hook (23), and only goes on when the new turn has a token", () => {
+test("it runs on the Turn Changed hook (23) and stops when the new turn has no token, or a card-less one", () => {
   const hook = action("counters_turn_tick");
   assert.equal(hook.hook, 23);
   assert.equal(hook.isEnabled, true);
 
-  assert.deepEqual(runScript("counters_turn_tick", { Data: { elementId: "e1" } }), { tick_hasToken: 1, tick_elementId: "e1" });
-  assert.deepEqual(runScript("counters_turn_tick", { Data: { elementId: null } }), { tick_hasToken: 0, tick_elementId: "" });
-  assert.deepEqual(runScript("counters_turn_tick", {}), { tick_hasToken: 0, tick_elementId: "" });
-});
+  const [noToken, noCard, unchanged] = steps("counters_turn_tick", "If");
+  assert.equal(noToken.Data.Condition, "'%Data.elementId%' = ''");
+  assert.equal(noToken.Data.Then[0].Type, "Exit");
 
-test("the token's card is read from its tokenData", () => {
-  assert.deepEqual(runScript("counters_turn_tick_token", { tick_tokenData: '{"cardId":"c1","x":1}' }), { tick_hasCard: 1, tick_cardId: "c1" });
-  assert.deepEqual(runScript("counters_turn_tick_token", { tick_tokenData: { cardId: "c2" } }), { tick_hasCard: 1, tick_cardId: "c2" });
-  for (const tokenData of [null, "", "not json", '{"x":1}']) {
-    assert.deepEqual(runScript("counters_turn_tick_token", { tick_tokenData: tokenData }), { tick_hasCard: 0, tick_cardId: "" }, String(tokenData));
-  }
+  const [token] = steps("counters_turn_tick", "Find");
+  assert.deepEqual([token.Data.What, token.Data.Id, token.Data.First, token.Data.Output], ["tokens", "%Data.elementId%", true, "tick_token"]);
+  assert.equal(noCard.Data.Condition, "'%tick_token.cardId%' = ''");
+  assert.equal(noCard.Data.Then[0].Type, "Exit");
+  assert.equal(unchanged.Data.Condition, "%tick_changed% = 0");
+  assert.equal(unchanged.Data.Then[0].Type, "Exit");
 });
 
 const counters = [
@@ -44,7 +43,7 @@ const counters = [
 ];
 
 test("the countdown matches the sheet's tickRound, and says what ended", () => {
-  const result = runScript("counters_turn_tick_card", { tick_counters: JSON.stringify(counters) });
+  const result = runScript("counters_turn_tick", { tick_counters: JSON.stringify(counters) });
   const expected = tickRound(counters);
 
   assert.deepEqual(JSON.parse(result.tick_newCounters), expected.counters);
@@ -55,7 +54,7 @@ test("the countdown matches the sheet's tickRound, and says what ended", () => {
 
 test("a spent per-round counter alone is refilled and written", () => {
   const spent = [{ ...counters[3] }];
-  const result = runScript("counters_turn_tick_card", { tick_counters: JSON.stringify(spent) });
+  const result = runScript("counters_turn_tick", { tick_counters: JSON.stringify(spent) });
   assert.deepEqual(JSON.parse(result.tick_newCounters), tickRound(spent).counters);
   assert.deepEqual([result.tick_changed, result.tick_hasEnded], [1, 0]);
 });
@@ -63,37 +62,25 @@ test("a spent per-round counter alone is refilled and written", () => {
 test("nothing active, or nothing readable: nothing to write", () => {
   const idle = [{ ...counters[2] }];
   for (const stored of [JSON.stringify(idle), "[]", "", "broken", null]) {
-    const result = runScript("counters_turn_tick_card", { tick_counters: stored });
+    const result = runScript("counters_turn_tick", { tick_counters: stored });
     assert.equal(result.tick_changed, 0, String(stored));
     assert.equal(result.tick_hasEnded, 0, String(stored));
   }
 });
 
-test("the actions are chained, write the card's counters and announce what ended", () => {
-  const [guard] = steps("counters_turn_tick", "If");
-  assert.equal(guard.Data.ActionTrue, "dnd5e/counters_turn_tick_token");
+test("it reads and writes the card's counters and announces what ended", () => {
+  const [read] = steps("counters_turn_tick", "GetPropertyValue");
+  assert.deepEqual([read.Data.ParentId, read.Data.PropertyName, read.Data.Output], ["%tick_token.cardId%", "dnd5e_counters", "tick_counters"]);
 
-  const [getElement] = steps("counters_turn_tick_token", "GetData");
-  assert.deepEqual([getElement.Data.Type, getElement.Data.Id, getElement.Data.SingleElement], ["Element", "%tick_elementId%", true]);
-  const [detail] = steps("counters_turn_tick_token", "GetDetail");
-  assert.deepEqual([detail.Data.DetailName, detail.Data.IsElement, detail.Data.Output], ["tokenData", true, "tick_tokenData"]);
-  assert.equal(steps("counters_turn_tick_token", "If")[0].Data.ActionTrue, "dnd5e/counters_turn_tick_card");
+  const [write] = steps("counters_turn_tick", "SetProperty");
+  assert.deepEqual([write.Data.ParentId, write.Data.PropertyName, write.Data.PropertyValue], ["%tick_token.cardId%", "dnd5e_counters", "%tick_newCounters%"]);
 
-  const [read] = steps("counters_turn_tick_card", "GetPropertyValue");
-  assert.deepEqual([read.Data.ParentId, read.Data.PropertyName, read.Data.Output], ["%tick_cardId%", "dnd5e_counters", "tick_counters"]);
-  assert.equal(steps("counters_turn_tick_card", "If")[0].Data.ActionTrue, "dnd5e/counters_turn_tick_apply");
-
-  const [write] = steps("counters_turn_tick_apply", "SetProperty");
-  assert.deepEqual([write.Data.ParentId, write.Data.PropertyName, write.Data.PropertyValue], ["%tick_cardId%", "dnd5e_counters", "%tick_newCounters%"]);
-  assert.equal(steps("counters_turn_tick_apply", "If")[0].Data.ActionTrue, "dnd5e/counters_turn_tick_ended");
-
-  const [chat] = steps("counters_turn_tick_ended", "SendChat");
+  const ended = steps("counters_turn_tick", "If").at(-1);
+  assert.equal(ended.Data.Condition, "%tick_hasEnded% = 1");
+  const [chat] = ended.Data.Then;
+  assert.equal(chat.Type, "SendChat");
+  assert.equal(chat.Data.Title, "%q:{tick_token.cardId}.name%");
   assert.match(chat.Data.Message, /%tick_endedText%/);
-
-  // Every If condition compares a 1/0 flag the scripts return (a plain variable: %name%).
-  for (const name of ["counters_turn_tick", "counters_turn_tick_token", "counters_turn_tick_card", "counters_turn_tick_apply"]) {
-    assert.match(steps(name, "If")[0].Data.Condition, /^%tick_\w+% = 1$/, name);
-  }
 });
 
 test("the token's counter icons follow the countdown, like the sheet's tokenIconProps", () => {
@@ -101,7 +88,7 @@ test("the token's counter icons follow the countdown, like the sheet's tokenIcon
     { ...newCounter({ name: "Rage", max: 3, reset: "long", durationRounds: 10, icon: "rage" }), id: "r", roundsLeft: 1 },
     { ...newCounter({ name: "Reaction", max: 1, reset: "round", icon: "hourglass" }), id: "re", current: 0, showOnToken: "uses" },
   ];
-  const result = runScript("counters_turn_tick_card", { tick_counters: JSON.stringify(raging) });
+  const result = runScript("counters_turn_tick", { tick_counters: JSON.stringify(raging) });
   const expected = tokenIconProps(tickRound(raging).counters);
 
   for (const { key } of COUNTER_ICONS) {
@@ -111,9 +98,9 @@ test("the token's counter icons follow the countdown, like the sheet's tokenIcon
   assert.deepEqual([result.tick_icon_rage, result.tick_icon_hourglass], ["false", "true"]);
 });
 
-test("the apply action writes every counter icon's property", () => {
-  const [write] = steps("counters_turn_tick_apply", "SetProperties");
-  assert.equal(write.Data.ParentId, "%tick_cardId%");
+test("it writes every counter icon's property", () => {
+  const [write] = steps("counters_turn_tick", "SetProperties");
+  assert.equal(write.Data.ParentId, "%tick_token.cardId%");
   const lines = write.Data.Properties.split("\n");
   assert.deepEqual(lines, COUNTER_ICONS.map(({ key }) => `${iconProperty(key)}=%tick_icon_${key}%`));
 });

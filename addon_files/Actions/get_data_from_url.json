@@ -22,7 +22,7 @@
         "Label": "Save to resources",
         "Key": "dnd5e_%output_name%",
         "Name": "dnd5e_%output_name%",
-        "Content": "%v:output.responseBody%",
+        "Content": "%output.responseBody%",
         "MimeType": "application/json"
       },
       "Type": "SetResource"

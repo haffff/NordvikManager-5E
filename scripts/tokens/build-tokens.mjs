@@ -25,6 +25,6 @@ const updateStep = (file, type, update) => {
   update(step.Data);
   fs.writeFileSync(p, JSON.stringify(action, null, 2) + "\n");
 };
-updateStep("counters_turn_tick_card.json", "RunScript", (data) => { data.Script = tickScript(); });
-updateStep("counters_turn_tick_apply.json", "SetProperties", (data) => { data.Properties = iconPropertyLines(); });
-console.log("counters_turn_tick_card / _apply: counter icon steps updated");
+updateStep("counters_turn_tick.json", "RunScript", (data) => { data.Script = tickScript(); });
+updateStep("counters_turn_tick.json", "SetProperties", (data) => { data.Properties = iconPropertyLines(); });
+console.log("counters_turn_tick: counter icon steps updated");

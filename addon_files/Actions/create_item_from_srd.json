@@ -91,7 +91,19 @@
       "Data": {
         "Label": "Spawn token if created from the battle map's Add menu",
         "Condition": "'%hasMapContext%' = 'true'",
-        "ActionTrue": "dnd5e/create_item_from_srd_spawn_token"
+        "Then": [
+          {
+            "id": "89ca3a5e-31ea-5796-b719-f7d4cf263801",
+            "Data": {
+              "Label": "Spawn token for newly created item card",
+              "Panel": "BattleMap_token",
+              "Command": "CreateToken",
+              "Player": "%playerId%",
+              "Data": "{\"contextId\": \"%battleMapId%\", \"cardId\": \"%newCardId%\", \"position\": %position%}"
+            },
+            "Type": "RunClientCommand"
+          }
+        ]
       },
       "Type": "If"
     }

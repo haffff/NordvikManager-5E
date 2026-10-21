@@ -65,7 +65,7 @@ export const deactivate = (counters, id) => change(counters, id, (c) => ({ ...c,
  * One of the character's turns started: active durations count down by one and
  * per-round counters refill. Returns the new list (unchanged counters are the same
  * objects) and the names of what just ran out. The Turn Changed action
- * (addon_files/Actions/counters_turn_tick_card.json) runs the same logic in its script.
+ * (addon_files/Actions/counters_turn_tick.json) runs the same logic in its script.
  */
 export const tickRound = (counters) => {
   const ended = [];

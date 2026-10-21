@@ -58,8 +58,6 @@
       "id": "2086f825-3da5-43e5-a20b-260864020186",
       "Data": {
         "Label": "auto death on 0 setting",
-        "Name": "",
-        "Comment": "",
         "ParentId": "%gameId%",
         "PropertyName": "dnd5e_token_auto_death",
         "PropertyValue": "true"
@@ -69,7 +67,6 @@
     {
       "Data": {
         "Label": "Get all data from content provider (SRD)",
-        "Name": "",
         "Value": "dnd5e/sync_data"
       },
       "Type": "ExecuteAction"
@@ -77,7 +74,6 @@
     {
       "Data": {
         "Label": "Create menus for settings",
-        "Name": "",
         "Value": "dnd5e/create_menus"
       },
       "Type": "ExecuteAction"

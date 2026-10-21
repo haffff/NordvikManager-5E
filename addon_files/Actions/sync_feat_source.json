@@ -20,9 +20,42 @@
       "id": "2833ec6d-b21c-49dc-a0b6-dd94219a28e5",
       "Data": {
         "Label": "Branch on success",
-        "Condition": "%v:output.StatusCode% = 200",
-        "ActionTrue": "dnd5e/sync_feat_source_ok",
-        "ActionFalse": "dnd5e/sync_feat_source_fail"
+        "Condition": "%output.StatusCode% = 200",
+        "Then": [
+          {
+            "id": "278c1d87-3731-576a-8dbe-13a0a13f8082",
+            "Data": {
+              "Label": "Save feat source to resources",
+              "Key": "%feat_key%",
+              "Name": "%feat_key%",
+              "Content": "%output.ResponseBody%",
+              "MimeType": "application/json"
+            },
+            "Type": "SetResource"
+          },
+          {
+            "id": "6e19a37b-fda5-5a58-b3c4-a090187396a1",
+            "Data": {
+              "Label": "Mark sync status ok",
+              "ParentId": "%gameId%",
+              "PropertyName": "dnd5e_sync_status_%feat_key%",
+              "PropertyValue": "ok"
+            },
+            "Type": "SetProperty"
+          }
+        ],
+        "Else": [
+          {
+            "id": "b9bbfcbd-0b97-56d7-a3db-11aaa6cd6238",
+            "Data": {
+              "Label": "Mark sync status failed",
+              "ParentId": "%gameId%",
+              "PropertyName": "dnd5e_sync_status_%feat_key%",
+              "PropertyValue": "error:%output.StatusCode%"
+            },
+            "Type": "SetProperty"
+          }
+        ]
       },
       "Type": "If"
     }
