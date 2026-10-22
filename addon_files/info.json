@@ -3,7 +3,7 @@
     "key": "dnd5e",
     "name": "Fifth Edition (SRD)",
     "description": "Fifth edition rules support for Nordvik Manager, with game data from the System Reference Documents 5.1 and 5.2 (CC-BY-4.0). Still work in progress.",
-    "version": "0.0.7",
+    "version": "0.0.8",
     "author": "haffff",
     "license": "AGPL-3.0-only",
     "repositoryUrl": "https://github.com/haffff/NordvikManager-5E"
