@@ -2,6 +2,10 @@
 
 Character, item and monster cards, actions and settings for playing fifth edition games in NordvikManager.
 
+## License
+
+The addon's code is licensed under the [GNU Affero General Public License v3](LICENSE) (`AGPL-3.0-only`), with an additional attribution term: see [NOTICE](NOTICE). The game data is under CC-BY-4.0, below.
+
 ## Game data and license
 
 The data the addon offers lives in `data/srd-5.1/` and `data/srd-5.2/` (items, spells, feats, languages,
