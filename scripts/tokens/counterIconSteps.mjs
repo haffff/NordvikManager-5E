@@ -1,12 +1,12 @@
 // The Turn Changed action's counter icon steps, generated from the icon palette
 // (card_sources/dnd5e-nordvikcard/src/tokenIcons.js) by `pnpm tokens:build`, so the
-// palette is listed in one place: the RunScript of counters_turn_tick_card works out
-// every icon's flag, and a SetProperties step in counters_turn_tick_apply writes them.
+// palette is listed in one place: the RunScript of counters_turn_tick works out every
+// icon's flag, and its SetProperties step writes them.
 import { COUNTER_ICONS, iconProperty } from "../../card_sources/dnd5e-nordvikcard/src/tokenIcons.js";
 
 const keys = () => COUNTER_ICONS.map((i) => i.key);
 
-/** counters_turn_tick_card's script: tickRound (counters.js) plus tokenIconProps (tokenIcons.js). */
+/** counters_turn_tick's script: tickRound (counters.js) plus tokenIconProps (tokenIcons.js). */
 export const tickScript = () => [
   "var list;",
   'try { list = typeof vars.tick_counters === "string" ? JSON.parse(vars.tick_counters) : vars.tick_counters; } catch (e) { list = null; }',
@@ -37,5 +37,5 @@ export const tickScript = () => [
   "return result;",
 ].join("\n");
 
-/** counters_turn_tick_apply's SetProperties lines: one per palette icon. */
+/** counters_turn_tick's SetProperties lines: one per palette icon. */
 export const iconPropertyLines = () => keys().map((k) => `${iconProperty(k)}=%tick_icon_${k}%`).join("\n");

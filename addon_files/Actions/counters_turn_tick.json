@@ -6,21 +6,123 @@
   "isEnabled": true,
   "content": [
     {
-      "id": "de641ff1-1d64-4190-b735-e8c635cd579e",
+      "id": "2fb1c56f-2935-5014-8f05-350c7a0fbbd0",
+      "Type": "If",
       "Data": {
-        "Label": "Does the new turn have a token?",
-        "Script": "var id = vars.Data && vars.Data.elementId ? String(vars.Data.elementId) : \"\";\nreturn { tick_hasToken: id ? 1 : 0, tick_elementId: id };",
+        "Label": "The new turn has no token: nothing to do",
+        "Condition": "'%Data.elementId%' = ''",
+        "Then": [
+          {
+            "id": "aaff5387-8bb2-5125-970f-48e361714399",
+            "Type": "Exit",
+            "Data": {
+              "Label": "Stop"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "4cebeb83-6da8-5756-834d-5ea995688a67",
+      "Type": "Find",
+      "Data": {
+        "Label": "The token whose turn it is",
+        "What": "tokens",
+        "Id": "%Data.elementId%",
+        "First": true,
+        "Output": "tick_token"
+      }
+    },
+    {
+      "id": "d5dd1918-60ac-5cd1-9000-1a3c7fb8a80d",
+      "Type": "If",
+      "Data": {
+        "Label": "A token without a card has no counters",
+        "Condition": "'%tick_token.cardId%' = ''",
+        "Then": [
+          {
+            "id": "c212b0c9-720e-51b3-8e35-8f865a276844",
+            "Type": "Exit",
+            "Data": {
+              "Label": "Stop"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "b6d8229e-1050-50e0-b537-35aed52af10f",
+      "Data": {
+        "Label": "The character's counters",
+        "ParentId": "%tick_token.cardId%",
+        "PropertyName": "dnd5e_counters",
+        "Output": "tick_counters",
+        "DefaultValue": "[]"
+      },
+      "Type": "GetPropertyValue"
+    },
+    {
+      "id": "15f344d5-2c5c-5423-a33e-cc2825405ccd",
+      "Data": {
+        "Label": "Count durations down, refill per-round counters, work out token icons (counters.js tickRound, tokenIcons.js)",
+        "Script": "var list;\ntry { list = typeof vars.tick_counters === \"string\" ? JSON.parse(vars.tick_counters) : vars.tick_counters; } catch (e) { list = null; }\nif (!Array.isArray(list)) list = [];\nvar ended = [];\nvar changed = 0;\nvar next = list.map(function (c) {\n  if (!c) return c;\n  var out = c;\n  if (c.roundsLeft > 0) {\n    out = Object.assign({}, out, { roundsLeft: c.roundsLeft - 1 });\n    if (out.roundsLeft === 0) ended.push(c.name);\n  }\n  if (c.reset === \"round\" && c.max > 0 && (c.current || 0) < c.max) out = Object.assign({}, out, { current: c.max });\n  if (out !== c) changed = 1;\n  return out;\n});\n// Token icons (tokenIcons.js tokenIconProps): on while a counter using it is active / has uses.\nvar keys = [\"rage\",\"flame\",\"shield\",\"bolt\",\"skull\",\"heart\",\"eye\",\"moon\",\"sun\",\"sword\",\"fist\",\"holy\",\"music\",\"leaf\",\"hourglass\",\"sparkles\",\"dot_yellow\",\"dot_red\",\"dot_blue\",\"dot_green\"];\nvar on = {};\nnext.forEach(function (c) {\n  if (!c || !c.icon) return;\n  var show = c.showOnToken || \"never\";\n  if ((show === \"active\" && c.roundsLeft > 0) || (show === \"uses\" && (c.current || 0) > 0)) on[c.icon] = true;\n});\nvar result = { tick_newCounters: JSON.stringify(next), tick_changed: changed, tick_hasEnded: ended.length ? 1 : 0, tick_endedText: ended.join(\", \") };\nkeys.forEach(function (k) { result[\"tick_icon_\" + k] = on[k] ? \"true\" : \"false\"; });\nreturn result;",
         "Output": ""
       },
       "Type": "RunScript"
     },
     {
-      "id": "20cbd635-274d-4098-915e-550ef871a788",
+      "id": "e674a745-4bf8-5838-8913-ea342e50edb7",
+      "Type": "If",
       "Data": {
-        "Label": "Token: count down its card's counters",
-        "Condition": "%tick_hasToken% = 1",
-        "ActionTrue": "dnd5e/counters_turn_tick_token",
-        "ActionFalse": ""
+        "Label": "Nothing changed",
+        "Condition": "%tick_changed% = 0",
+        "Then": [
+          {
+            "id": "d8fecc24-2fbd-55f7-ab3e-2ab74f982029",
+            "Type": "Exit",
+            "Data": {
+              "Label": "Stop"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "d6e9902a-5dff-5ade-b3ad-8f2754645188",
+      "Data": {
+        "Label": "Save the counters",
+        "ParentId": "%tick_token.cardId%",
+        "PropertyName": "dnd5e_counters",
+        "PropertyValue": "%tick_newCounters%"
+      },
+      "Type": "SetProperty"
+    },
+    {
+      "id": "55cc68ce-bf24-5511-83ea-78f668f66324",
+      "Data": {
+        "Label": "Show or hide the counter icons on the token",
+        "ParentId": "%tick_token.cardId%",
+        "Properties": "dnd5e_icon_rage=%tick_icon_rage%\ndnd5e_icon_flame=%tick_icon_flame%\ndnd5e_icon_shield=%tick_icon_shield%\ndnd5e_icon_bolt=%tick_icon_bolt%\ndnd5e_icon_skull=%tick_icon_skull%\ndnd5e_icon_heart=%tick_icon_heart%\ndnd5e_icon_eye=%tick_icon_eye%\ndnd5e_icon_moon=%tick_icon_moon%\ndnd5e_icon_sun=%tick_icon_sun%\ndnd5e_icon_sword=%tick_icon_sword%\ndnd5e_icon_fist=%tick_icon_fist%\ndnd5e_icon_holy=%tick_icon_holy%\ndnd5e_icon_music=%tick_icon_music%\ndnd5e_icon_leaf=%tick_icon_leaf%\ndnd5e_icon_hourglass=%tick_icon_hourglass%\ndnd5e_icon_sparkles=%tick_icon_sparkles%\ndnd5e_icon_dot_yellow=%tick_icon_dot_yellow%\ndnd5e_icon_dot_red=%tick_icon_dot_red%\ndnd5e_icon_dot_blue=%tick_icon_dot_blue%\ndnd5e_icon_dot_green=%tick_icon_dot_green%"
+      },
+      "Type": "SetProperties"
+    },
+    {
+      "id": "5b4048ad-0687-51f0-982a-cd9efa15de13",
+      "Data": {
+        "Label": "Something ended",
+        "Condition": "%tick_hasEnded% = 1",
+        "Then": [
+          {
+            "id": "c8859c1d-485c-519a-9d07-1c97c70ccdec",
+            "Data": {
+              "Label": "Announce it",
+              "Template": "Text",
+              "Title": "%q:{tick_token.cardId}.name%",
+              "Message": "Ended: %tick_endedText%"
+            },
+            "Type": "SendChat"
+          }
+        ]
       },
       "Type": "If"
     }

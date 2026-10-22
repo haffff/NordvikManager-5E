@@ -20,9 +20,42 @@
       "id": "f3a1b111-0d00-4a00-8a00-000000000002",
       "Data": {
         "Label": "Branch on success",
-        "Condition": "%v:output.StatusCode% = 200",
-        "ActionTrue": "dnd5e/sync_spell_source_ok",
-        "ActionFalse": "dnd5e/sync_spell_source_fail"
+        "Condition": "%output.StatusCode% = 200",
+        "Then": [
+          {
+            "id": "9c4b59b8-bb62-5092-9389-2169e0dc1d19",
+            "Data": {
+              "Label": "Save spell source to resources",
+              "Key": "%spell_key%",
+              "Name": "%spell_key%",
+              "Content": "%output.ResponseBody%",
+              "MimeType": "application/json"
+            },
+            "Type": "SetResource"
+          },
+          {
+            "id": "26a616ae-4778-542c-9460-87e7283057b4",
+            "Data": {
+              "Label": "Mark sync status ok",
+              "ParentId": "%gameId%",
+              "PropertyName": "dnd5e_sync_status_%spell_key%",
+              "PropertyValue": "ok"
+            },
+            "Type": "SetProperty"
+          }
+        ],
+        "Else": [
+          {
+            "id": "9cdea6c6-ce67-5e43-8cb5-f45d7918cb6a",
+            "Data": {
+              "Label": "Mark sync status failed",
+              "ParentId": "%gameId%",
+              "PropertyName": "dnd5e_sync_status_%spell_key%",
+              "PropertyValue": "error:%output.StatusCode%"
+            },
+            "Type": "SetProperty"
+          }
+        ]
       },
       "Type": "If"
     }

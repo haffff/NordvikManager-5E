@@ -20,9 +20,42 @@
       "id": "27a1b111-0d00-4a00-8a00-000000000002",
       "Data": {
         "Label": "Branch on success",
-        "Condition": "%v:output.StatusCode% = 200",
-        "ActionTrue": "dnd5e/sync_bestiary_source_ok",
-        "ActionFalse": "dnd5e/sync_bestiary_source_fail"
+        "Condition": "%output.StatusCode% = 200",
+        "Then": [
+          {
+            "id": "923c09bd-b283-5b1f-8d1f-1a3a4164b735",
+            "Data": {
+              "Label": "Save bestiary source to resources",
+              "Key": "%bestiary_key%",
+              "Name": "%bestiary_key%",
+              "Content": "%output.ResponseBody%",
+              "MimeType": "application/json"
+            },
+            "Type": "SetResource"
+          },
+          {
+            "id": "cd2b9f3c-1d66-53a2-b359-bf20583dbc1e",
+            "Data": {
+              "Label": "Mark sync status ok",
+              "ParentId": "%gameId%",
+              "PropertyName": "dnd5e_sync_status_%bestiary_key%",
+              "PropertyValue": "ok"
+            },
+            "Type": "SetProperty"
+          }
+        ],
+        "Else": [
+          {
+            "id": "499a1747-ed6a-53b0-bf51-c750d670a50e",
+            "Data": {
+              "Label": "Mark sync status failed",
+              "ParentId": "%gameId%",
+              "PropertyName": "dnd5e_sync_status_%bestiary_key%",
+              "PropertyValue": "error:%output.StatusCode%"
+            },
+            "Type": "SetProperty"
+          }
+        ]
       },
       "Type": "If"
     }
