@@ -37,7 +37,7 @@
       "Data": {
         "Label": "item_url",
         "Name": "item_url",
-        "Value": "https://raw.githubusercontent.com/haffff/NordvikManager-DND/refs/heads/main/data/srd-5.2/items.json"
+        "Value": "https://raw.githubusercontent.com/haffff/NordvikManager-5E/refs/heads/main/data/srd-5.2/items.json"
       }
     },
     {
@@ -63,7 +63,7 @@
       "Data": {
         "Label": "spell_url",
         "Name": "spell_url",
-        "Value": "https://raw.githubusercontent.com/haffff/NordvikManager-DND/refs/heads/main/data/srd-5.2/spells.json"
+        "Value": "https://raw.githubusercontent.com/haffff/NordvikManager-5E/refs/heads/main/data/srd-5.2/spells.json"
       }
     },
     {
@@ -89,7 +89,7 @@
       "Data": {
         "Label": "feat_url",
         "Name": "feat_url",
-        "Value": "https://raw.githubusercontent.com/haffff/NordvikManager-DND/refs/heads/main/data/srd-5.2/feats.json"
+        "Value": "https://raw.githubusercontent.com/haffff/NordvikManager-5E/refs/heads/main/data/srd-5.2/feats.json"
       }
     },
     {
@@ -115,7 +115,7 @@
       "Data": {
         "Label": "bestiary_url",
         "Name": "bestiary_url",
-        "Value": "https://raw.githubusercontent.com/haffff/NordvikManager-DND/refs/heads/main/data/srd-5.2/monsters.json"
+        "Value": "https://raw.githubusercontent.com/haffff/NordvikManager-5E/refs/heads/main/data/srd-5.2/monsters.json"
       }
     },
     {
