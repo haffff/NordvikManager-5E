@@ -3,8 +3,8 @@
 
 export const SRD_EDITIONS = ["5.1", "5.2"];
 
-const REPO_BLOB = "https://github.com/haffff/NordvikManager-DND/blob/main/data";
-const REPO_RAW = "https://raw.githubusercontent.com/haffff/NordvikManager-DND/refs/heads/main/data";
+const REPO_BLOB = "https://github.com/haffff/NordvikManager-5E/blob/main/data";
+const REPO_RAW = "https://raw.githubusercontent.com/haffff/NordvikManager-5E/refs/heads/main/data";
 
 // Derives the resource-key suffix for a source from its display name — must
 // match the derivation in each consuming card's own useXData.js hook exactly
