@@ -3,7 +3,5 @@
   "name": "token",
   "prefix": "token",
   "size": 1,
-  "object": {
-    "clipShape": "circle"
-  }
+  "object": {}
 }
