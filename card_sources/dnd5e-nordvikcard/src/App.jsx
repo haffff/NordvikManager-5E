@@ -80,38 +80,29 @@ function CharacterSheet({ Api, gameId }) {
         ))}
       </div>
 
-      {/* Tabs stay mounted (display: none) so their property subscriptions persist. */}
-      <div
-        style={{
-          display: tab === "stats" ? "flex" : "none",
-          flexDirection: "row",
-          padding: "8px",
-          gap: "6px",
-          flexWrap: "wrap",
-          flex: 1,
-          overflowY: "auto",
-        }}
-      >
-        <div style={{ display: "flex", flexDirection: "column" }}>
+      {/* Tabs stay mounted (display: none) so their property subscriptions persist.
+          The Stats layout is in shared.css (dnd5e_stats_*): one column on narrow screens. */}
+      <div className="dnd5e_stats" style={{ display: tab === "stats" ? "flex" : "none" }}>
+        <div className="dnd5e_stats_side">
           <CharName5E Api={Api} />
           <AttributesContainer attributesList={config.attributes} Api={Api} />
           <ProficienciesLanguages5E Api={Api} />
         </div>
-        <div style={{ display: "flex", flexDirection: "column", flex: 1, minWidth: 0 }}>
+        <div className="dnd5e_stats_main">
           <CharacterInfo5E Api={Api} />
-          <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
+          <div className="dnd5e_stats_boxes">
             <ProficencyBonus5E Api={Api} />
             <SingleValue5E Api={Api} propertyName="armor" label="Armor Class" />
             <SingleValue5E Api={Api} propertyName="initiative" label="Initiative" rollLabel="Roll" rollOnClick={() => {}} />
             <SingleValue5E Api={Api} propertyName="speed" label="Speed" />
           </div>
-          <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap", alignItems: "flex-start" }}>
+          <div className="dnd5e_stats_row">
             <SavingThrows5E Api={Api} attributesList={config.attributes} />
             <HPPanel5E Api={Api} />
           </div>
-          <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap", alignItems: "flex-start" }}>
+          <div className="dnd5e_stats_row">
             <Skills5E Api={Api} skills={config.skills} />
-            <div style={{ display: "flex", flexDirection: "column", flexGrow: 1, flexBasis: 0, minWidth: 0 }}>
+            <div className="dnd5e_stats_column">
               <DeathSaves Api={Api} />
               <Weapons5E Api={Api} />
               <Inventory5E Api={Api} />
