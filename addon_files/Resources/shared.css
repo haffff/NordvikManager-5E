@@ -424,7 +424,7 @@ body {
     padding: 10px 12px;
     margin: 4px;
     width: auto;
-    min-width: 220px;
+    min-width: min(220px, 100%);
     height: auto;
 }
 
@@ -1302,6 +1302,147 @@ button:active {
     color: var(--dnd-crimson);
     border-bottom: 2px solid var(--dnd-parchment);
     margin-bottom: -2px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Stats tab layout: the side column (name, ability scores,
+   languages) next to the main one; one column on narrow screens
+   ═══════════════════════════════════════════════════════════════ */
+.dnd5e_stats {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 8px;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.dnd5e_stats_side {
+    display: flex;
+    flex-direction: column;
+}
+
+.dnd5e_stats_main {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+}
+
+.dnd5e_stats_boxes {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.dnd5e_stats_row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.dnd5e_stats_column {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    flex-basis: 0;
+    min-width: 0;
+}
+
+/* Phones and narrow panels. The card's page is as wide as its panel, so this follows
+   the panel, not the screen. */
+@media (max-width: 600px) {
+    /* Tabs share the row instead of running off its end. */
+    .dnd5e_tabs {
+        padding: 6px 4px 0;
+    }
+
+    .dnd5e_tab {
+        flex: 1 1 auto;
+        min-width: 0;
+        padding: 8px 4px;
+        font-size: 10px;
+        letter-spacing: 0.04em;
+        text-align: center;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .dnd5e_stats {
+        flex-direction: column;
+        flex-wrap: nowrap;
+        gap: 0;
+        padding: 4px;
+    }
+
+    .dnd5e_stats_side,
+    .dnd5e_stats_main,
+    .dnd5e_stats_column {
+        flex: 0 0 auto;
+        width: 100%;
+    }
+
+    /* Ability scores in rows of three instead of one tall stack. */
+    .dnd5e_attribute_container {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .dnd5e_attribute_container .dnd5e_attribute {
+        flex: 0 1 30%;
+        width: auto;
+        min-width: 0;
+    }
+
+    /* Prof. bonus, AC, initiative and speed share one row. */
+    .dnd5e_stats_boxes .dnd5e_attribute {
+        flex: 1 1 0;
+        width: auto;
+        min-width: 0;
+    }
+
+    .dnd5e_stats_boxes .dnd5e_attribute_name {
+        letter-spacing: 0.04em;
+    }
+
+    .dnd5e_stats_row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .dnd5e_saving_throws_container,
+    .dnd5e_death_saves_container {
+        min-width: 0;
+    }
+
+    .dnb5e_hppanel .dnd5e_health_bar {
+        flex: 1 1 0;
+        min-width: 0;
+    }
+
+    .dnb5e_hppanel .dnd5e_health_value {
+        width: auto;
+        max-width: 100%;
+    }
+
+    /* Larger tap targets. */
+    .dnd5e_listItem {
+        padding: 6px 4px;
+    }
+
+    .dnd5e_listItem_prof input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+    }
+
+    .dnd5e_death_saves_success_checkbox,
+    .dnd5e_death_saves_failure_checkbox {
+        width: 24px;
+        height: 24px;
+    }
 }
 
 /* ═══════════════════════════════════════════════════════════════
