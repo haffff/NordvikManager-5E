@@ -78,6 +78,7 @@
       "Label": "5E Add Monster",
       "Location": "battlemap_add",
       "Name": "add_dnd_monster",
+      "GmOnly": true,
       "UiName": "Monster",
       "Action": "dnd5e/open_monster_creator",
       "Icon": "FaDragon"

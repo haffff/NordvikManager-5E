@@ -1,6 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/haffff/NordvikManager-Addons/refs/heads/main/schemas/action.json",
   "name": "roll_attribute",
+  "genericPermission": 2,
   "hook": 0,
   "prefix": "dnd5e",
   "isEnabled": false,
