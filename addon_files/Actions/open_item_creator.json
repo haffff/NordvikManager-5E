@@ -10,7 +10,7 @@
       "id": "a9a9a9a9-0d00-4a00-8a00-000000000001",
       "Data": {
         "Label": "Show item creator",
-        "ViewKey": "item_creator",
+        "ViewKey": "dnd5e_item_creator",
         "Player": "%playerId%",
         "Data": "{\"battleMapId\": \"%battleMapId%\", \"position\": %position%}"
       },
