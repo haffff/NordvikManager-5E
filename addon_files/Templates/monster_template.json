@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/haffff/NordvikManager-Addons/refs/heads/main/schemas/card.json",
   "name": "5E Monster Template",
   "description": "A template for fifth edition monsters.",
-  "key": "monster",
+  "key": "dnd5e_monster",
   "mainResource": "dnd5e_index.html",
   "additionalResources": [
     "dnd5e_dnd5e-monstercard.js",

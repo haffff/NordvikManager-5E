@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/haffff/NordvikManager-Addons/refs/heads/main/schemas/card.json",
   "name": "5E Item Template",
   "description": "A template for fifth edition items and notes.",
-  "key": "item",
+  "key": "dnd5e_item",
   "mainResource": "dnd5e_index.html",
   "additionalResources": ["dnd5e_dnd5e-itemcard.js", "dnd5e_shared.css"],
   "properties": [
