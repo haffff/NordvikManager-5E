@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/haffff/NordvikManager-Addons/refs/heads/main/schemas/card.json",
   "name": "5E Character Template",
   "description": "A template for fifth edition characters.",
-  "key": "character",
+  "key": "dnd5e_character",
   "mainResource": "dnd5e_index.html",
   "additionalResources": ["dnd5e_dnd5e-nordvikcard.js", "dnd5e_shared.css"],
   "properties": [

@@ -38,8 +38,8 @@ test("opened from the map, it also places the monster's token there", () => {
 test("the creator view is GM only, and reachable from the menus", () => {
   const open = action("open_monster_creator");
   assert.equal(open.genericPermission, 0);
-  assert.equal(step("open_monster_creator", "ShowView").Data.ViewKey, "monster_creator");
-  assert.equal(json("addon_files/Views/monster_creator.json").key, "monster_creator");
+  assert.equal(step("open_monster_creator", "ShowView").Data.ViewKey, "dnd5e_monster_creator");
+  assert.equal(json("addon_files/Views/monster_creator.json").key, "dnd5e_monster_creator");
 
   const menus = action("create_menus").content.map((s) => s.Data);
   const toCreator = menus.filter((m) => m.Action === "dnd5e/open_monster_creator").map((m) => m.Location);

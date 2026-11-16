@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/haffff/NordvikManager-Addons/refs/heads/main/schemas/card.json",
   "name": "5E Monster Creator",
   "description": "Search the bestiary sources and create a filled-in monster card.",
-  "key": "monster_creator",
+  "key": "dnd5e_monster_creator",
   "mainResource": "dnd5e_index.html",
   "additionalResources": [
     "dnd5e_dnd5e-monstercreator.js",

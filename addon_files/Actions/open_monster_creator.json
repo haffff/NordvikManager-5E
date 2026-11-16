@@ -9,7 +9,7 @@
       "id": "9bb5ad95-2177-4807-bb05-895e7b4026a6",
       "Data": {
         "Label": "Show monster creator",
-        "ViewKey": "monster_creator",
+        "ViewKey": "dnd5e_monster_creator",
         "Player": "%playerId%",
         "Data": "{\"battleMapId\": \"%battleMapId%\", \"position\": %position%}"
       },
